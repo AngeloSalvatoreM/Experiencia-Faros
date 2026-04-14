@@ -6,7 +6,7 @@
     <title>FAROS | Experiencia Interactiva</title>
     <meta
       name="description"
-      content="Experiencia interactiva FAROS: ingreso inmersivo, mapa de servicios y narrativa visual por solución."
+      content="Experiencia inmersiva FAROS construida como una narrativa continua con GSAP."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,120 +17,75 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="app-shell">
+    <main class="app-shell">
       <div class="ambient ambient-a"></div>
       <div class="ambient ambient-b"></div>
+      <div class="space-grid"></div>
 
-      <section class="view intro-view is-active" data-view="intro" aria-labelledby="intro-title">
-        <div class="intro-grid"></div>
-        <button class="logo-gateway" id="enterFaros" aria-label="Entrar a FAROS">
-          <span class="logo-mark" aria-hidden="true">
-            <span class="logo-core"></span>
-            <span class="logo-ring logo-ring-a"></span>
-            <span class="logo-ring logo-ring-b"></span>
-            <span class="logo-beam beam-top"></span>
-            <span class="logo-beam beam-right"></span>
-            <span class="logo-beam beam-bottom"></span>
-            <span class="logo-beam beam-left"></span>
-          </span>
-          <span class="logo-copy">
-            <span class="eyebrow">Experiencia Interactiva</span>
-            <span class="brand" id="intro-title">FAROS</span>
-            <span class="tagline">Entrar para transformar la operación</span>
-          </span>
-        </button>
-      </section>
+      <section class="experience" id="experience">
+        <div class="intro-overlay" id="introOverlay">
+          <p class="eyebrow intro-eyebrow">Experiencia Interactiva</p>
 
-      <section class="view map-view" data-view="map" aria-labelledby="map-title">
-        <header class="view-header">
-          <div>
-            <p class="eyebrow">Servicios</p>
-            <h1 id="map-title">Elegir un camino es activar una transformación.</h1>
+          <button class="logo-gateway" id="enterFaros" aria-label="Entrar a FAROS">
+            <span class="logo-mark" aria-hidden="true">
+              <span class="logo-core"></span>
+              <span class="logo-ring logo-ring-a"></span>
+              <span class="logo-ring logo-ring-b"></span>
+              <span class="logo-beam beam-top"></span>
+              <span class="logo-beam beam-right"></span>
+              <span class="logo-beam beam-bottom"></span>
+              <span class="logo-beam beam-left"></span>
+            </span>
+            <span class="logo-copy">
+              <span class="brand">FAROS</span>
+              <span class="tagline">Entrar para transformar la operación</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="experience-stage" id="experienceStage">
+          <header class="scene-copy" id="sceneCopy">
+            <p class="eyebrow" id="sceneEyebrow">Servicios FAROS</p>
+            <h1 class="scene-title" id="sceneTitle">Una red, cinco caminos, una sola operación con foco.</h1>
+            <p class="scene-phase" id="scenePhase">Mapa</p>
+          </header>
+
+          <button class="back-button is-hidden" id="backToMap" type="button">Volver al mapa</button>
+
+          <div class="stage-ornaments" aria-hidden="true">
+            <span class="orbit orbit-a"></span>
+            <span class="orbit orbit-b"></span>
+            <span class="orbit orbit-c"></span>
           </div>
-        </header>
 
-        <div class="network-stage" id="networkStage">
           <svg class="network-svg" viewBox="0 0 1000 1000" aria-hidden="true">
             <defs>
               <radialGradient id="hubGlow" cx="50%" cy="50%" r="60%">
-                <stop offset="0%" stop-color="#C6A66B" stop-opacity="0.75" />
-                <stop offset="70%" stop-color="#A2854E" stop-opacity="0.1" />
+                <stop offset="0%" stop-color="#C6A66B" stop-opacity="0.7" />
+                <stop offset="70%" stop-color="#A2854E" stop-opacity="0.08" />
                 <stop offset="100%" stop-color="#A2854E" stop-opacity="0" />
               </radialGradient>
             </defs>
-            <circle cx="500" cy="500" r="110" fill="url(#hubGlow)" class="hub-glow"></circle>
+            <circle class="hub-glow" cx="500" cy="500" r="118" fill="url(#hubGlow)"></circle>
             <g id="servicePaths"></g>
           </svg>
 
-          <div class="network-hub" id="networkHub">
-            <div class="hub-label">FAROS</div>
-            <p>Operación, control y transformación conectados.</p>
+          <div class="map-layer" id="mapLayer">
+            <div class="hub-anchor" id="hubAnchor"></div>
+            <div class="service-nodes" id="serviceNodes"></div>
           </div>
 
-          <div class="service-nodes" id="serviceNodes"></div>
-        </div>
-      </section>
-
-      <section class="view service-view" data-view="service" aria-live="polite">
-        <button class="back-button" id="backToMap" type="button">Volver al mapa</button>
-
-        <div class="service-layout">
-          <aside class="service-copy">
-            <p class="eyebrow" id="serviceEyebrow">Servicio</p>
-            <h2 id="serviceTitle">FAROS</h2>
-            <p class="service-problem" id="serviceProblem"></p>
-
-            <div class="story-status">
-              <span class="status-line"></span>
-              <span class="status-label" id="storyPhaseLabel">Problema</span>
-            </div>
-
-            <div class="service-panel">
-              <p class="panel-label" id="servicePanelLabel">Impacto</p>
-              <p class="panel-body" id="servicePanelBody"></p>
-            </div>
-
-            <div class="service-result-card" id="resultCard">
-              <span class="result-label">Resultado</span>
-              <p id="serviceResult"></p>
-            </div>
-
-            <button class="ghost-button" id="replayStory" type="button">Reproducir historia</button>
-          </aside>
-
-          <div class="service-stage">
-            <div class="stage-background">
-              <span class="grid-orbit orbit-a"></span>
-              <span class="grid-orbit orbit-b"></span>
-              <span class="grid-orbit orbit-c"></span>
-            </div>
-
-            <div class="stage-layer problem-layer" id="problemLayer">
-              <div class="impact-pulse"></div>
-              <div class="impact-copy">
-                <span class="mini-label">Problema</span>
-                <p id="impactStatement"></p>
-              </div>
-            </div>
-
-            <div class="stage-layer transformation-layer" id="transformationLayer">
-              <div class="diagnosis-grid" id="diagnosisGrid"></div>
-              <div class="transformation-beam"></div>
-            </div>
-
-            <div class="stage-layer result-layer" id="resultLayer">
-              <div class="result-orbit"></div>
-              <div class="result-core">
-                <span class="mini-label">Impacto</span>
-                <p id="resultStatement"></p>
-              </div>
-            </div>
+          <div class="story-layer" id="storyLayer">
+            <div class="hero-message" id="heroMessage"></div>
+            <div class="diagnostic-cloud" id="diagnosticCloud"></div>
+            <div class="result-message" id="resultMessage"></div>
           </div>
         </div>
       </section>
-    </div>
+    </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

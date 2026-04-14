@@ -1,8 +1,9 @@
+gsap.registerPlugin(Flip);
+
 const services = [
   {
     id: "bpo",
     title: "BPO",
-    short: "Externalización operativa con estructura y continuidad.",
     problem: "La operación se sobrecarga y pierde control en momentos críticos",
     diagnosis: [
       "Procesos manuales y dispersos",
@@ -15,13 +16,22 @@ const services = [
       "Soporte continuo",
     ],
     result: "Operación estable, continua y controlada",
-    position: { x: 14, y: 24 },
-    curve: "M500,500 C370,430 250,320 160,260",
+    map: { x: 190, y: 300 },
+    focus: { x: 500, y: 500 },
+    diagnosisPositions: [
+      { x: 290, y: 430 },
+      { x: 500, y: 360 },
+      { x: 710, y: 430 },
+    ],
+    solutionPositions: [
+      { x: 330, y: 565 },
+      { x: 500, y: 455 },
+      { x: 670, y: 565 },
+    ],
   },
   {
     id: "contratos",
     title: "Administración de contratos",
-    short: "Control contractual, documental y financiero con seguimiento real.",
     problem: "Los contratos existen, pero no se gestionan",
     diagnosis: [
       "Falta de control documental",
@@ -34,13 +44,22 @@ const services = [
       "Seguimiento de estados de pago",
     ],
     result: "Control contractual real y reducción de riesgos",
-    position: { x: 68, y: 14 },
-    curve: "M500,500 C560,360 650,250 760,180",
+    map: { x: 700, y: 190 },
+    focus: { x: 500, y: 500 },
+    diagnosisPositions: [
+      { x: 290, y: 430 },
+      { x: 500, y: 360 },
+      { x: 710, y: 430 },
+    ],
+    solutionPositions: [
+      { x: 315, y: 550 },
+      { x: 500, y: 450 },
+      { x: 685, y: 550 },
+    ],
   },
   {
     id: "sap",
     title: "Soporte Funcional SAP",
-    short: "Soporte estructurado con trazabilidad, SLA y mejora continua.",
     problem: "La operación no se detiene, pero los sistemas fallan",
     diagnosis: [
       "Incidentes sin trazabilidad",
@@ -53,13 +72,22 @@ const services = [
       "Mejora continua",
     ],
     result: "Continuidad operacional con control y visibilidad",
-    position: { x: 74, y: 44 },
-    curve: "M500,500 C620,470 730,450 840,460",
+    map: { x: 820, y: 500 },
+    focus: { x: 500, y: 500 },
+    diagnosisPositions: [
+      { x: 285, y: 430 },
+      { x: 500, y: 360 },
+      { x: 715, y: 430 },
+    ],
+    solutionPositions: [
+      { x: 330, y: 560 },
+      { x: 500, y: 440 },
+      { x: 670, y: 560 },
+    ],
   },
   {
     id: "transformacion",
     title: "Acompañamiento en proyectos de transformación",
-    short: "Aterrizaje operativo para que el proyecto sí funcione.",
     problem: "Los proyectos avanzan, pero no aterrizan en la operación",
     diagnosis: [
       "Desalineación negocio–tecnología",
@@ -72,13 +100,22 @@ const services = [
       "Control de avance real",
     ],
     result: "Proyectos que se implementan y funcionan",
-    position: { x: 60, y: 72 },
-    curve: "M500,500 C560,610 650,700 700,790",
+    map: { x: 650, y: 780 },
+    focus: { x: 500, y: 500 },
+    diagnosisPositions: [
+      { x: 295, y: 430 },
+      { x: 500, y: 360 },
+      { x: 705, y: 430 },
+    ],
+    solutionPositions: [
+      { x: 325, y: 560 },
+      { x: 500, y: 450 },
+      { x: 675, y: 560 },
+    ],
   },
   {
     id: "ia",
     title: "Faros IA",
-    short: "Datos, automatización e inteligencia conectados a la operación.",
     problem: "Los datos existen, pero no se usan",
     diagnosis: [
       "Información dispersa",
@@ -91,97 +128,76 @@ const services = [
       "Integración con sistemas",
     ],
     result: "Decisiones más rápidas y basadas en datos",
-    position: { x: 12, y: 68 },
-    curve: "M500,500 C390,610 260,720 150,760",
+    map: { x: 180, y: 720 },
+    focus: { x: 500, y: 500 },
+    diagnosisPositions: [
+      { x: 300, y: 430 },
+      { x: 500, y: 360 },
+      { x: 700, y: 430 },
+    ],
+    solutionPositions: [
+      { x: 325, y: 560 },
+      { x: 500, y: 450 },
+      { x: 675, y: 560 },
+    ],
   },
 ];
 
 const state = {
-  currentView: "intro",
   currentService: null,
-  storyTimeline: null,
+  introDone: false,
+  activeTimeline: null,
 };
 
-const views = {
-  intro: document.querySelector('[data-view="intro"]'),
-  map: document.querySelector('[data-view="map"]'),
-  service: document.querySelector('[data-view="service"]'),
-};
-
-const introButton = document.getElementById("enterFaros");
-const backButton = document.getElementById("backToMap");
-const replayButton = document.getElementById("replayStory");
-const serviceNodes = document.getElementById("serviceNodes");
+const enterButton = document.getElementById("enterFaros");
+const introOverlay = document.getElementById("introOverlay");
+const hubAnchor = document.getElementById("hubAnchor");
+const sceneEyebrow = document.getElementById("sceneEyebrow");
+const sceneTitle = document.getElementById("sceneTitle");
+const scenePhase = document.getElementById("scenePhase");
 const servicePaths = document.getElementById("servicePaths");
-const networkHub = document.getElementById("networkHub");
-const storyPhaseLabel = document.getElementById("storyPhaseLabel");
-const serviceEyebrow = document.getElementById("serviceEyebrow");
-const serviceTitle = document.getElementById("serviceTitle");
-const serviceProblem = document.getElementById("serviceProblem");
-const servicePanelLabel = document.getElementById("servicePanelLabel");
-const servicePanelBody = document.getElementById("servicePanelBody");
-const serviceResult = document.getElementById("serviceResult");
-const impactStatement = document.getElementById("impactStatement");
-const resultStatement = document.getElementById("resultStatement");
-const diagnosisGrid = document.getElementById("diagnosisGrid");
-const problemLayer = document.getElementById("problemLayer");
-const transformationLayer = document.getElementById("transformationLayer");
-const resultLayer = document.getElementById("resultLayer");
-const resultCard = document.getElementById("resultCard");
+const serviceNodes = document.getElementById("serviceNodes");
+const heroMessage = document.getElementById("heroMessage");
+const diagnosticCloud = document.getElementById("diagnosticCloud");
+const resultMessage = document.getElementById("resultMessage");
+const backButton = document.getElementById("backToMap");
 
-function initIntroAnimation() {
-  const logo = document.querySelector(".logo-mark");
-  const rings = document.querySelectorAll(".logo-ring, .logo-beam");
-
-  gsap.to(logo, {
-    scale: 1.04,
-    duration: 2.6,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
-
-  gsap.to(rings, {
-    opacity: 0.42,
-    duration: 2.2,
-    stagger: 0.1,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
+function setNodePosition(element, point) {
+  gsap.set(element, {
+    x: point.x,
+    y: point.y,
+    xPercent: -50,
+    yPercent: -50,
   });
 }
 
-function renderNetwork() {
+function buildMap() {
   services.forEach((service) => {
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", service.curve);
-    path.setAttribute("class", "network-path");
+    path.classList.add("network-path");
     path.dataset.service = service.id;
+    path.setAttribute(
+      "d",
+      `M500,500 C500,500 ${(service.map.x + 500) / 2},${(service.map.y + 500) / 2} ${service.map.x},${service.map.y}`,
+    );
     servicePaths.appendChild(path);
 
     const node = document.createElement("button");
-    node.className = "network-node";
+    node.className = "service-node";
     node.dataset.service = service.id;
-    node.style.left = `${service.position.x}%`;
-    node.style.top = `${service.position.y}%`;
     node.innerHTML = `
-      <span class="node-title">${service.title}</span>
-      <span class="node-copy">${service.short}</span>
+      <span class="service-node-dot"></span>
+      <span class="service-node-label">${service.title}</span>
     `;
-
-    node.addEventListener("mouseenter", () => highlightService(service.id));
-    node.addEventListener("mouseleave", clearHighlights);
-    node.addEventListener("focus", () => highlightService(service.id));
-    node.addEventListener("blur", clearHighlights);
-    node.addEventListener("click", () => openService(service.id));
-
+    setNodePosition(node, service.map);
+    node.addEventListener("mouseenter", () => hoverNode(service.id, true));
+    node.addEventListener("mouseleave", () => hoverNode(service.id, false));
+    node.addEventListener("focus", () => hoverNode(service.id, true));
+    node.addEventListener("blur", () => hoverNode(service.id, false));
+    node.addEventListener("click", () => enterService(service.id));
     serviceNodes.appendChild(node);
   });
 
-  preparePaths();
-}
-
-function preparePaths() {
   document.querySelectorAll(".network-path").forEach((path) => {
     const length = path.getTotalLength();
     path.dataset.length = length;
@@ -190,328 +206,372 @@ function preparePaths() {
   });
 }
 
-function highlightService(serviceId) {
-  document.querySelectorAll(".network-node").forEach((node) => {
-    node.classList.toggle("is-active", node.dataset.service === serviceId);
+function startIntroPulse() {
+  gsap.to(".logo-mark", {
+    scale: 1.04,
+    duration: 2.6,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+
+  gsap.to(".logo-ring, .logo-beam", {
+    opacity: 0.42,
+    duration: 2.2,
+    stagger: 0.08,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+}
+
+function hoverNode(serviceId, entering) {
+  if (!state.introDone || state.currentService) return;
+
+  document.querySelectorAll(".service-node").forEach((node) => {
+    const active = entering && node.dataset.service === serviceId;
+    gsap.to(node, {
+      scale: active ? 1.14 : entering ? 0.9 : 1,
+      opacity: active ? 1 : entering ? 0.22 : 0.78,
+      duration: 0.35,
+      ease: "power2.out",
+    });
+    node.classList.toggle("is-active", active);
   });
 
   document.querySelectorAll(".network-path").forEach((path) => {
-    path.classList.toggle("is-highlighted", path.dataset.service === serviceId);
+    const active = entering && path.dataset.service === serviceId;
+    path.classList.toggle("is-active", active);
+    path.classList.toggle("is-dimmed", entering && !active);
+    gsap.to(path, {
+      opacity: active ? 1 : entering ? 0.08 : 0.24,
+      duration: 0.35,
+      ease: "power2.out",
+    });
   });
 }
 
-function clearHighlights() {
-  document
-    .querySelectorAll(".network-node, .network-path")
-    .forEach((element) => element.classList.remove("is-active", "is-highlighted"));
+function resetMapFocus() {
+  document.querySelectorAll(".service-node").forEach((node) => {
+    node.classList.remove("is-active");
+    const service = services.find((item) => item.id === node.dataset.service);
+    setNodePosition(node, service.map);
+  });
+
+  document.querySelectorAll(".network-path").forEach((path) => {
+    path.classList.remove("is-active", "is-dimmed");
+    const length = Number(path.dataset.length || 0);
+    path.style.strokeDashoffset = "0";
+    path.style.strokeDasharray = `${length}`;
+  });
+
+  gsap.set(".service-node", { opacity: 0.78, scale: 1 });
+  gsap.set(".network-path", { opacity: 0.24 });
+  gsap.set(".map-layer", { scale: 1, x: 0, y: 0 });
 }
 
-function switchView(nextView) {
-  if (state.currentView === nextView) return;
-
-  const current = views[state.currentView];
-  const next = views[nextView];
-
-  const tl = gsap.timeline();
-
-  tl
-    .to(current, {
-      autoAlpha: 0,
-      duration: 0.45,
-      ease: "power2.inOut",
-    })
-    .set(next, {
-      autoAlpha: 0,
-      display: "block",
-    })
-    .add(() => next.classList.add("is-active"))
-    .add(() => current.classList.remove("is-active"))
-    .fromTo(
-      next,
-      { autoAlpha: 0 },
-      { autoAlpha: 1, duration: 0.65, ease: "power2.out" },
-    );
-
-  state.currentView = nextView;
-  return tl;
+function clearStory() {
+  heroMessage.textContent = "";
+  resultMessage.textContent = "";
+  diagnosticCloud.innerHTML = "";
+  gsap.set([heroMessage, resultMessage, diagnosticCloud], { clearProps: "all" });
 }
 
 function enterExperience() {
+  if (state.introDone) return;
+
+  const logo = enterButton;
+  const flipState = Flip.getState(logo);
+
+  logo.classList.add("is-hub");
+  hubAnchor.appendChild(logo);
+
   const tl = gsap.timeline({
+    defaults: { ease: "power2.inOut" },
     onComplete: () => {
-      const viewTransition = switchView("map");
-      if (viewTransition) {
-        viewTransition.eventCallback("onComplete", animateMapIn);
-      }
+      state.introDone = true;
+      introOverlay.style.pointerEvents = "none";
+      introOverlay.style.display = "none";
     },
   });
 
-  tl.to(".logo-gateway", {
-    scale: 1.18,
-    duration: 0.55,
-    ease: "power2.in",
-  })
-    .to(".logo-ring-a", { scale: 1.6, opacity: 0, duration: 0.65, ease: "power3.inOut" }, 0)
-    .to(".logo-ring-b", { scale: 1.9, opacity: 0, duration: 0.65, ease: "power3.inOut" }, 0.04)
-    .to(".logo-core", { scale: 0.45, opacity: 0, duration: 0.55, ease: "power2.in" }, 0)
-    .to(".logo-copy", { y: -18, opacity: 0, duration: 0.45, ease: "power2.in" }, 0.05)
-    .to(".intro-grid", { opacity: 0, duration: 0.45 }, 0)
-    .to(".intro-view", { autoAlpha: 0, duration: 0.3 }, 0.48);
+  tl.add(
+    Flip.from(flipState, {
+      duration: 1.35,
+      absolute: true,
+      scale: true,
+      ease: "power3.inOut",
+    }),
+    0,
+  )
+    .to(".intro-eyebrow", { y: -120, duration: 1 }, 0)
+    .to(".tagline", { y: 10, duration: 1 }, 0)
+    .fromTo(
+      ".network-path",
+      { strokeDashoffset: (_, target) => Number(target.dataset.length || 0) },
+      {
+        strokeDashoffset: 0,
+        opacity: 0.24,
+        duration: 1.2,
+        stagger: 0.06,
+        ease: "power2.out",
+      },
+      0.35,
+    )
+    .fromTo(
+      ".service-node",
+      { scale: 0.3, opacity: 0 },
+      { scale: 1, opacity: 0.78, duration: 0.75, stagger: 0.06, ease: "back.out(1.5)" },
+      0.5,
+    )
+    .to(introOverlay, { y: -40, duration: 0.8 }, 0.4);
+
+  state.activeTimeline = tl;
 }
 
-function animateMapIn() {
-  gsap.fromTo(
-    networkHub,
-    { scale: 0.82, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 1, ease: "power3.out" },
-  );
-
-  gsap.fromTo(
-    ".network-path",
-    {
-      opacity: 0,
-      strokeDashoffset: (_, target) => Number(target.dataset.length || 0),
-    },
-    {
-      opacity: 1,
-      strokeDashoffset: 0,
-      duration: 1.1,
-      stagger: 0.08,
-      ease: "power2.out",
-    },
-  );
-
-  gsap.fromTo(
-    ".network-node",
-    { y: 18, opacity: 0, scale: 0.96 },
-    { y: 0, opacity: 1, scale: 1, duration: 0.9, stagger: 0.09, ease: "power3.out" },
-  );
-}
-
-function populateService(service) {
-  serviceEyebrow.textContent = "Servicio FAROS";
-  serviceTitle.textContent = service.title;
-  serviceProblem.textContent = service.problem;
-  servicePanelLabel.textContent = "Impacto";
-  servicePanelBody.textContent = "La tensión operativa aparece cuando el flujo pierde estructura, trazabilidad o continuidad.";
-  serviceResult.textContent = service.result;
-  impactStatement.textContent = service.problem;
-  resultStatement.textContent = service.result;
-
-  diagnosisGrid.innerHTML = service.diagnosis
+function renderDiagnostics(service) {
+  diagnosticCloud.innerHTML = service.diagnosis
     .map(
       (item, index) => `
-        <article class="diagnosis-card" data-index="${index}">
-          <span class="card-index">Diagnóstico ${index + 1}</span>
-          <p class="card-text">${item}</p>
+        <article class="diagnostic-item" data-index="${index}">
+          <span class="item-label">Diagnóstico ${index + 1}</span>
+          <p class="item-text">${item}</p>
         </article>
       `,
     )
     .join("");
+
+  gsap.utils.toArray(".diagnostic-item").forEach((item, index) => {
+    setNodePosition(item, service.diagnosisPositions[index]);
+  });
 }
 
-function runServiceStory(service) {
-  if (state.storyTimeline) {
-    state.storyTimeline.kill();
-  }
+function runServiceNarrative(service) {
+  clearStory();
+  renderDiagnostics(service);
 
-  populateService(service);
+  const items = gsap.utils.toArray(".diagnostic-item");
+  heroMessage.textContent = service.problem;
+  resultMessage.textContent = service.result;
 
-  const cards = gsap.utils.toArray(".diagnosis-card");
-  const cardTexts = cards.map((card) => card.querySelector(".card-text"));
-  const cardIndexes = cards.map((card) => card.querySelector(".card-index"));
+  gsap.set(heroMessage, { xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 0.15, scale: 0.9 });
+  gsap.set(items, { opacity: 0, scale: 0.55 });
+  gsap.set(resultMessage, { xPercent: -50, yPercent: -50, y: 40, opacity: 0, scale: 0.88 });
 
-  gsap.set(problemLayer, { opacity: 1 });
-  gsap.set(transformationLayer, { opacity: 1 });
-  gsap.set(resultLayer, { opacity: 0 });
-  gsap.set(cards, { y: 40, opacity: 0, scale: 0.94 });
-  gsap.set(".transformation-beam", { opacity: 0, xPercent: -30 });
-  gsap.set(resultCard, { opacity: 0.4, y: 12 });
+  const tl = gsap.timeline({
+    defaults: { ease: "power3.inOut" },
+  });
 
-  storyPhaseLabel.textContent = "Problema";
-
-  const tl = gsap.timeline();
-
-  tl.fromTo(
-    problemLayer,
-    { scale: 0.92, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.9, ease: "power3.out" },
-  )
-    .to(".impact-pulse", {
-      scale: 1.08,
-      opacity: 0.84,
-      duration: 1.2,
-      repeat: 1,
-      yoyo: true,
-      ease: "sine.inOut",
-    }, 0)
-    .add(() => {
-      storyPhaseLabel.textContent = "Diagnóstico";
-      servicePanelLabel.textContent = "Diagnóstico";
-      servicePanelBody.textContent = "Los puntos críticos se hacen visibles y se ordenan para intervenir donde realmente se pierde control.";
-    }, "+=0.2")
-    .to(problemLayer, {
-      opacity: 0.24,
-      scale: 0.96,
-      duration: 0.6,
-      ease: "power2.inOut",
-    })
-    .to(cards, {
-      y: 0,
+  tl.add(() => {
+    sceneEyebrow.textContent = "Servicio FAROS";
+    sceneTitle.textContent = service.title;
+    scenePhase.textContent = "Problema";
+  })
+    .to(heroMessage, {
       opacity: 1,
       scale: 1,
-      duration: 0.75,
-      stagger: 0.12,
+      duration: 0.9,
       ease: "power3.out",
-    }, "<0.1")
-    .add(() => {
-      storyPhaseLabel.textContent = "Solución FAROS";
-      servicePanelLabel.textContent = "Solución";
-      servicePanelBody.textContent = "FAROS convierte fricción operativa en una estructura estable, medible y continua.";
-    }, "+=0.8")
-    .to(".transformation-beam", {
-      opacity: 1,
-      xPercent: 30,
-      duration: 1,
-      ease: "power2.inOut",
     })
-    .to(cards, {
-      borderColor: "rgba(198, 166, 107, 0.72)",
-      boxShadow: "0 22px 60px rgba(162, 133, 78, 0.22)",
+    .add(() => {
+      scenePhase.textContent = "Diagnóstico";
+    }, "+=0.25")
+    .to(heroMessage, {
+      y: -54,
+      scale: 0.88,
       duration: 0.8,
-      stagger: 0.08,
-    }, "<0.1")
-    .to(cards, {
-      y: (index) => (index === 1 ? -28 : index === 0 ? 18 : 22),
-      x: (index) => (index === 0 ? 56 : index === 2 ? -56 : 0),
-      scale: 1.02,
-      duration: 0.9,
-      stagger: 0.06,
-      ease: "power3.inOut",
-    }, "<")
-    .add(() => {
-      cards.forEach((card, index) => {
-        card.classList.add("is-solution");
-        cardIndexes[index].textContent = `Solución ${index + 1}`;
-      });
     })
-    .to(cardTexts, {
-      opacity: 0,
-      y: 12,
-      duration: 0.28,
-      stagger: 0.05,
-      ease: "power1.in",
-      onComplete: () => {
-        cardTexts.forEach((text, index) => {
-          text.textContent = service.solution[index];
-        });
+    .to(
+      items,
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "back.out(1.4)",
       },
-    })
-    .to(cardTexts, {
-      opacity: 1,
-      y: 0,
-      duration: 0.48,
-      stagger: 0.08,
-      ease: "power2.out",
-    })
+      "<0.08",
+    )
     .add(() => {
-      storyPhaseLabel.textContent = "Resultado";
-      servicePanelLabel.textContent = "Resultado";
-      servicePanelBody.textContent = service.result;
-    }, "+=0.9")
-    .to(problemLayer, {
-      opacity: 0,
-      duration: 0.6,
-      ease: "power2.out",
-    })
-    .to(cards, {
-      scale: 0.9,
-      opacity: 0.26,
-      duration: 0.65,
-      stagger: 0.04,
-      ease: "power2.inOut",
-    }, "<")
-    .to(resultLayer, {
-      opacity: 1,
-      duration: 0.9,
-      ease: "power3.out",
-    }, "-=0.15")
-    .to(".result-orbit", {
-      scale: 1.08,
-      duration: 1.4,
-      repeat: 1,
-      yoyo: true,
-      ease: "sine.inOut",
-    }, "<")
-    .to(resultCard, {
-      opacity: 1,
+      scenePhase.textContent = "Solución";
+      const flipState = Flip.getState(items);
+      items.forEach((item, index) => {
+        item.classList.add("is-solution");
+        item.querySelector(".item-label").textContent = `Solución ${index + 1}`;
+        item.querySelector(".item-text").textContent = service.solution[index];
+        setNodePosition(item, service.solutionPositions[index]);
+      });
+      tl.add(
+        Flip.from(flipState, {
+          duration: 1.2,
+          absolute: true,
+          scale: true,
+          ease: "power3.inOut",
+          stagger: 0.05,
+        }),
+      );
+    }, "+=0.65")
+    .add(() => {
+      scenePhase.textContent = "Resultado";
+    }, "+=0.7")
+    .to(items, {
+      x: 0,
       y: 0,
-      duration: 0.5,
-      ease: "power2.out",
-    }, "-=0.5");
+      scale: 0.72,
+      opacity: 0.16,
+      duration: 0.8,
+      stagger: 0.04,
+    })
+    .to(
+      heroMessage,
+      {
+        y: -110,
+        opacity: 0.08,
+        scale: 0.8,
+        duration: 0.7,
+      },
+      "<",
+    )
+    .to(
+      resultMessage,
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.95,
+        ease: "power3.out",
+      },
+      "-=0.12",
+    );
 
-  state.storyTimeline = tl;
+  return tl;
 }
 
-function openService(serviceId) {
+function enterService(serviceId) {
+  if (!state.introDone) return;
+  if (state.activeTimeline) state.activeTimeline.kill();
+
   const service = services.find((item) => item.id === serviceId);
-  if (!service) return;
+  const node = document.querySelector(`.service-node[data-service="${serviceId}"]`);
+  if (!service || !node) return;
 
   state.currentService = service;
-  highlightService(serviceId);
+  backButton.classList.remove("is-hidden");
 
-  const targetNode = document.querySelector(`.network-node[data-service="${serviceId}"]`);
-  const targetPath = document.querySelector(`.network-path[data-service="${serviceId}"]`);
+  const flipState = Flip.getState(node);
+  setNodePosition(node, service.focus);
+  node.classList.add("is-active");
 
-  gsap.timeline({
-    onComplete: () => {
-      const viewTransition = switchView("service");
-      if (viewTransition) {
-        viewTransition.eventCallback("onComplete", () => runServiceStory(service));
-      }
+  const tl = gsap.timeline({
+    defaults: { ease: "power3.inOut" },
+    onStart: () => {
+      document.querySelectorAll(".service-node").forEach((element) => {
+        if (element !== node) {
+          gsap.to(element, { opacity: 0.08, scale: 0.8, duration: 0.4 });
+        }
+      });
+      document.querySelectorAll(".network-path").forEach((path) => {
+        const active = path.dataset.service === serviceId;
+        path.classList.toggle("is-active", active);
+        path.classList.toggle("is-dimmed", !active);
+      });
     },
-  })
-    .to(".network-node", {
-      opacity: (index, element) => (element === targetNode ? 1 : 0.15),
-      scale: (index, element) => (element === targetNode ? 1.08 : 0.92),
-      duration: 0.45,
-      ease: "power2.inOut",
-    })
-    .to(targetPath, {
-      stroke: "rgba(198, 166, 107, 0.9)",
-      strokeWidth: 3,
-      duration: 0.4,
-      ease: "power2.inOut",
-    }, "<")
-    .to(".network-stage", {
-      scale: 1.05,
-      opacity: 0,
-      duration: 0.6,
-      ease: "power2.inOut",
-    });
-}
-
-function returnToMap() {
-  const viewTransition = switchView("map");
-  clearHighlights();
-  gsap.set(".network-stage", { opacity: 1, scale: 1 });
-  gsap.set(".network-node", { opacity: 1, scale: 1, clearProps: "transform" });
-  gsap.set(".network-path", {
-    clearProps: "stroke,strokeWidth",
-    strokeDashoffset: (_, target) => Number(target.dataset.length || 0),
   });
-  if (viewTransition) {
-    viewTransition.eventCallback("onComplete", animateMapIn);
-  }
+
+  tl.to(".map-layer", {
+    scale: 1.18,
+    x: (500 - service.map.x) * 0.14,
+    y: (500 - service.map.y) * 0.14,
+    duration: 0.9,
+  })
+    .add(
+      Flip.from(flipState, {
+        duration: 0.9,
+        absolute: true,
+        scale: true,
+        ease: "power3.inOut",
+      }),
+      0,
+    )
+    .to(node, {
+      scale: 2.4,
+      duration: 0.9,
+    }, 0.08)
+    .to(
+      `.network-path[data-service="${serviceId}"]`,
+      {
+        opacity: 1,
+        strokeWidth: 3.2,
+        duration: 0.8,
+      },
+      0.1,
+    )
+    .add(() => {
+      node.style.pointerEvents = "none";
+    })
+    .add(runServiceNarrative(service), "-=0.15");
+
+  state.activeTimeline = tl;
 }
 
-introButton.addEventListener("click", enterExperience);
-backButton.addEventListener("click", returnToMap);
-replayButton.addEventListener("click", () => {
-  if (state.currentService) {
-    runServiceStory(state.currentService);
-  }
-});
+function backToMap() {
+  if (!state.currentService) return;
+  if (state.activeTimeline) state.activeTimeline.kill();
 
-renderNetwork();
-initIntroAnimation();
+  const currentServiceId = state.currentService.id;
+  const node = document.querySelector(`.service-node[data-service="${currentServiceId}"]`);
+  const service = services.find((item) => item.id === currentServiceId);
+  const flipState = Flip.getState(node);
+
+  state.currentService = null;
+  clearStory();
+  sceneEyebrow.textContent = "Servicios FAROS";
+  sceneTitle.textContent = "Una red, cinco caminos, una sola operación con foco.";
+  scenePhase.textContent = "Mapa";
+
+  setNodePosition(node, service.map);
+  node.style.pointerEvents = "";
+  backButton.classList.add("is-hidden");
+
+  const tl = gsap.timeline({
+    defaults: { ease: "power3.inOut" },
+    onComplete: () => {
+      resetMapFocus();
+    },
+  });
+
+  tl.to(".map-layer", {
+    scale: 1,
+    x: 0,
+    y: 0,
+    duration: 0.9,
+  })
+    .add(
+      Flip.from(flipState, {
+        duration: 0.9,
+        absolute: true,
+        scale: true,
+        ease: "power3.inOut",
+      }),
+      0,
+    )
+    .to(node, { scale: 1, opacity: 0.78, duration: 0.9 }, 0)
+    .to(
+      ".service-node",
+      { opacity: 0.78, scale: 1, duration: 0.5, stagger: 0.04 },
+      0.3,
+    )
+    .to(
+      ".network-path",
+      { opacity: 0.24, strokeWidth: 2, duration: 0.5 },
+      0.3,
+    );
+
+  state.activeTimeline = tl;
+}
+
+buildMap();
+startIntroPulse();
+
+enterButton.addEventListener("click", enterExperience);
+backButton.addEventListener("click", backToMap);
