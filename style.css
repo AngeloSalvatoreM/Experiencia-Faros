@@ -1,0 +1,635 @@
+:root {
+  --blue-main: #223e5d;
+  --blue-dark: #172d45;
+  --gold: #a2854e;
+  --gold-light: #c6a66b;
+  --white: #f2f2f2;
+  --gray-light: #cdcdcd;
+  --line-soft: rgba(198, 166, 107, 0.18);
+  --line-strong: rgba(198, 166, 107, 0.68);
+  --panel: rgba(23, 45, 69, 0.8);
+  --panel-strong: rgba(34, 62, 93, 0.92);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 18px;
+  --transition: 0.45s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(34, 62, 93, 0.3), transparent 38%),
+    linear-gradient(145deg, #172d45 0%, #223e5d 55%, #172d45 100%);
+  color: var(--white);
+  font-family: "Manrope", sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.ambient {
+  position: absolute;
+  inset: auto;
+  border-radius: 999px;
+  filter: blur(32px);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.ambient-a {
+  width: 28rem;
+  height: 28rem;
+  top: -8rem;
+  left: -6rem;
+  background: radial-gradient(circle, rgba(198, 166, 107, 0.42), transparent 72%);
+}
+
+.ambient-b {
+  width: 34rem;
+  height: 34rem;
+  right: -10rem;
+  bottom: -14rem;
+  background: radial-gradient(circle, rgba(34, 62, 93, 0.6), transparent 72%);
+}
+
+.view {
+  position: absolute;
+  inset: 0;
+  padding: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.view.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.eyebrow,
+.panel-label,
+.result-label,
+.mini-label {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--gold-light);
+  font-size: 0.76rem;
+}
+
+.intro-view {
+  display: grid;
+  place-items: center;
+}
+
+.intro-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(242, 242, 242, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 242, 242, 0.03) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: radial-gradient(circle at center, black 35%, transparent 80%);
+}
+
+.logo-gateway {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 1.75rem;
+  justify-items: center;
+  padding: 2rem;
+  cursor: pointer;
+}
+
+.logo-mark {
+  position: relative;
+  width: min(34vw, 16rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.logo-core,
+.logo-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.logo-core {
+  inset: 28%;
+  background: radial-gradient(circle, rgba(198, 166, 107, 0.5), rgba(162, 133, 78, 0.12) 65%, transparent 78%);
+  box-shadow: 0 0 40px rgba(198, 166, 107, 0.25);
+}
+
+.logo-ring-a {
+  border: 1px solid rgba(198, 166, 107, 0.45);
+}
+
+.logo-ring-b {
+  inset: 12%;
+  border: 1px solid rgba(205, 205, 205, 0.28);
+}
+
+.logo-beam {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(198, 166, 107, 0.9), transparent);
+  opacity: 0.9;
+}
+
+.beam-top,
+.beam-bottom {
+  width: 64%;
+  height: 1px;
+}
+
+.beam-left,
+.beam-right {
+  width: 1px;
+  height: 64%;
+  background: linear-gradient(180deg, transparent, rgba(198, 166, 107, 0.9), transparent);
+}
+
+.beam-top {
+  top: 18%;
+}
+
+.beam-right {
+  right: 18%;
+}
+
+.beam-bottom {
+  bottom: 18%;
+}
+
+.beam-left {
+  left: 18%;
+}
+
+.logo-copy {
+  display: grid;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.brand {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(3.2rem, 10vw, 7.5rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tagline {
+  color: var(--gray-light);
+  font-size: clamp(1rem, 2.1vw, 1.3rem);
+}
+
+.view-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+}
+
+.view-header h1,
+.service-copy h2 {
+  margin: 0;
+  max-width: 10ch;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(2rem, 4.6vw, 4.6rem);
+  line-height: 0.96;
+}
+
+.network-stage {
+  position: relative;
+  height: calc(100vh - 8rem);
+}
+
+.network-svg,
+.service-nodes,
+.stage-background,
+.problem-layer,
+.transformation-layer,
+.result-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.network-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.network-path {
+  fill: none;
+  stroke: var(--line-soft);
+  stroke-width: 2;
+  transition: stroke var(--transition), filter var(--transition), opacity var(--transition);
+}
+
+.network-path.is-highlighted {
+  stroke: var(--line-strong);
+  filter: drop-shadow(0 0 10px rgba(198, 166, 107, 0.48));
+}
+
+.network-node {
+  position: absolute;
+  width: min(18rem, 28vw);
+  padding: 1.15rem 1.2rem;
+  border: 1px solid rgba(198, 166, 107, 0.28);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, rgba(34, 62, 93, 0.78), rgba(23, 45, 69, 0.94));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.network-node:hover,
+.network-node.is-active {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(198, 166, 107, 0.78);
+  background: linear-gradient(180deg, rgba(34, 62, 93, 0.96), rgba(23, 45, 69, 0.98));
+}
+
+.network-node .node-title {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.network-node .node-copy {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--gray-light);
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+
+.network-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(22rem, 34vw);
+  padding: 1.8rem;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  border: 1px solid rgba(198, 166, 107, 0.3);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  background: radial-gradient(circle, rgba(34, 62, 93, 0.95), rgba(23, 45, 69, 0.68) 62%, rgba(23, 45, 69, 0.2) 100%);
+  box-shadow: 0 0 80px rgba(23, 45, 69, 0.55);
+}
+
+.hub-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1.9rem, 4vw, 3.8rem);
+  letter-spacing: 0.12em;
+}
+
+.network-hub p {
+  margin: 0.85rem 0 0;
+  max-width: 16ch;
+  color: var(--gray-light);
+  line-height: 1.45;
+}
+
+.service-view {
+  padding-top: 1.6rem;
+}
+
+.back-button,
+.ghost-button {
+  position: relative;
+  z-index: 3;
+  width: fit-content;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid rgba(198, 166, 107, 0.36);
+  border-radius: 999px;
+  background: rgba(23, 45, 69, 0.6);
+  color: var(--white);
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.back-button:hover,
+.ghost-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(198, 166, 107, 0.72);
+  background: rgba(34, 62, 93, 0.82);
+}
+
+.service-layout {
+  display: grid;
+  grid-template-columns: minmax(18rem, 28rem) minmax(0, 1fr);
+  gap: 2rem;
+  height: calc(100vh - 5rem);
+  padding-top: 1rem;
+}
+
+.service-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-content: start;
+  gap: 1.2rem;
+  padding: 1.5rem 1.5rem 1.5rem 0;
+}
+
+.service-problem,
+.panel-body,
+.result-core p,
+#serviceResult {
+  margin: 0;
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--gray-light);
+}
+
+.service-problem {
+  color: var(--white);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  max-width: 24ch;
+}
+
+.story-status {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.status-line {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(198, 166, 107, 0.85), rgba(198, 166, 107, 0.1));
+}
+
+.status-label {
+  color: var(--gold-light);
+}
+
+.service-panel,
+.service-result-card {
+  padding: 1.25rem;
+  border: 1px solid rgba(198, 166, 107, 0.22);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+}
+
+.service-result-card {
+  background: linear-gradient(180deg, rgba(162, 133, 78, 0.18), rgba(23, 45, 69, 0.8));
+  opacity: 0.4;
+}
+
+.service-stage {
+  position: relative;
+  min-height: 0;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(145deg, rgba(23, 45, 69, 0.85), rgba(34, 62, 93, 0.5)),
+    radial-gradient(circle at center, rgba(198, 166, 107, 0.08), transparent 42%);
+  border: 1px solid rgba(198, 166, 107, 0.16);
+  overflow: hidden;
+}
+
+.stage-background::before,
+.stage-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.stage-background::before {
+  background-image:
+    linear-gradient(rgba(242, 242, 242, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 242, 242, 0.035) 1px, transparent 1px);
+  background-size: 5rem 5rem;
+  opacity: 0.28;
+}
+
+.stage-background::after {
+  background: radial-gradient(circle at center, transparent 0, rgba(23, 45, 69, 0.2) 54%, rgba(23, 45, 69, 0.82) 100%);
+}
+
+.grid-orbit {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border: 1px solid rgba(198, 166, 107, 0.14);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.orbit-a {
+  width: 26rem;
+  height: 26rem;
+}
+
+.orbit-b {
+  width: 38rem;
+  height: 38rem;
+}
+
+.orbit-c {
+  width: 54rem;
+  height: 54rem;
+}
+
+.stage-layer {
+  display: grid;
+  place-items: center;
+}
+
+.impact-pulse,
+.result-orbit {
+  position: absolute;
+  width: min(44vw, 28rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(198, 166, 107, 0.22);
+}
+
+.impact-pulse::before,
+.impact-pulse::after,
+.result-orbit::before,
+.result-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  border: 1px solid rgba(198, 166, 107, 0.14);
+}
+
+.impact-copy,
+.result-core {
+  position: relative;
+  width: min(68%, 34rem);
+  padding: 2rem;
+  text-align: center;
+  border-radius: var(--radius-xl);
+  background: rgba(23, 45, 69, 0.34);
+  backdrop-filter: blur(8px);
+}
+
+.impact-copy p,
+.result-core p {
+  margin: 0.8rem 0 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1.8rem, 3.8vw, 3.6rem);
+  line-height: 1.04;
+  color: var(--white);
+}
+
+.diagnosis-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(10rem, 12rem));
+  gap: 1rem;
+}
+
+.diagnosis-card {
+  min-height: 10rem;
+  padding: 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(198, 166, 107, 0.2);
+  background: linear-gradient(180deg, rgba(23, 45, 69, 0.85), rgba(34, 62, 93, 0.54));
+  display: grid;
+  align-content: space-between;
+  box-shadow: var(--shadow);
+}
+
+.diagnosis-card .card-index {
+  color: var(--gold-light);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.diagnosis-card .card-text {
+  font-size: 1.1rem;
+  line-height: 1.35;
+}
+
+.diagnosis-card.is-solution {
+  border-color: rgba(198, 166, 107, 0.72);
+  background: linear-gradient(180deg, rgba(162, 133, 78, 0.22), rgba(34, 62, 93, 0.88));
+}
+
+.transformation-beam {
+  position: absolute;
+  width: 120%;
+  height: 18rem;
+  background: linear-gradient(90deg, transparent, rgba(198, 166, 107, 0.2), transparent);
+  transform: rotate(-14deg);
+  opacity: 0;
+}
+
+.result-layer {
+  opacity: 0;
+}
+
+@media (max-width: 1100px) {
+  body {
+    overflow: auto;
+  }
+
+  .view {
+    position: relative;
+    min-height: 100vh;
+  }
+
+  .network-stage,
+  .service-layout {
+    height: auto;
+    min-height: calc(100vh - 8rem);
+  }
+
+  .service-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .service-copy {
+    padding-right: 0;
+  }
+
+  .service-stage {
+    min-height: 34rem;
+  }
+
+  .diagnosis-grid {
+    grid-template-columns: 1fr;
+    width: min(100%, 20rem);
+  }
+
+  .network-hub {
+    width: min(18rem, 60vw);
+  }
+
+  .network-node {
+    width: min(16rem, 44vw);
+  }
+}
+
+@media (max-width: 720px) {
+  .view {
+    padding: 1.25rem;
+  }
+
+  .logo-mark {
+    width: min(68vw, 15rem);
+  }
+
+  .network-stage {
+    min-height: 48rem;
+  }
+
+  .network-node {
+    width: min(14rem, 58vw);
+    padding: 1rem;
+  }
+
+  .service-stage {
+    min-height: 30rem;
+  }
+
+  .impact-copy,
+  .result-core {
+    width: 82%;
+    padding: 1.4rem;
+  }
+}
