@@ -147,6 +147,7 @@ const state = {
   currentService: null,
   introDone: false,
   activeTimeline: null,
+  activeNode: null,
 };
 
 const enterButton = document.getElementById("enterFaros");
@@ -161,6 +162,13 @@ const heroMessage = document.getElementById("heroMessage");
 const diagnosticCloud = document.getElementById("diagnosticCloud");
 const resultMessage = document.getElementById("resultMessage");
 const backButton = document.getElementById("backToMap");
+const sceneCopy = document.getElementById("sceneCopy");
+
+function setMapScene() {
+  sceneEyebrow.textContent = "Servicios FAROS";
+  sceneTitle.textContent = "Elegir un servicio activa una transformación.";
+  scenePhase.textContent = "Mapa interactivo";
+}
 
 function setNodePosition(element, point) {
   gsap.set(element, {
@@ -237,6 +245,7 @@ function hoverNode(serviceId, entering) {
       ease: "power2.out",
     });
     node.classList.toggle("is-active", active);
+    node.classList.toggle("is-muted", entering && !active);
   });
 
   document.querySelectorAll(".network-path").forEach((path) => {
@@ -253,9 +262,11 @@ function hoverNode(serviceId, entering) {
 
 function resetMapFocus() {
   document.querySelectorAll(".service-node").forEach((node) => {
-    node.classList.remove("is-active");
+    node.classList.remove("is-active", "is-muted", "is-focus");
     const service = services.find((item) => item.id === node.dataset.service);
     setNodePosition(node, service.map);
+    node.querySelector(".service-node-label").textContent = service.title;
+    node.style.pointerEvents = "";
   });
 
   document.querySelectorAll(".network-path").forEach((path) => {
@@ -292,6 +303,7 @@ function enterExperience() {
       state.introDone = true;
       introOverlay.style.pointerEvents = "none";
       introOverlay.style.display = "none";
+      gsap.set(logo, { clearProps: "transform" });
     },
   });
 
@@ -324,6 +336,7 @@ function enterExperience() {
       { scale: 1, opacity: 0.78, duration: 0.75, stagger: 0.06, ease: "back.out(1.5)" },
       0.5,
     )
+    .fromTo(sceneCopy, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65 }, 0.65)
     .to(introOverlay, { y: -40, duration: 0.8 }, 0.4);
 
   state.activeTimeline = tl;
@@ -364,29 +377,30 @@ function runServiceNarrative(service) {
 
   tl.add(() => {
     sceneEyebrow.textContent = "Servicio FAROS";
-    sceneTitle.textContent = service.title;
+    sceneTitle.textContent = "El sistema se reorganiza en tiempo real.";
     scenePhase.textContent = "Problema";
+    gsap.to(sceneCopy, { opacity: 1, duration: 0.3 });
   })
     .to(heroMessage, {
       opacity: 1,
       scale: 1,
-      duration: 0.9,
+      duration: 0.72,
       ease: "power3.out",
     })
     .add(() => {
       scenePhase.textContent = "Diagnóstico";
     }, "+=0.25")
     .to(heroMessage, {
-      y: -54,
-      scale: 0.88,
-      duration: 0.8,
+      y: -82,
+      scale: 0.9,
+      duration: 0.7,
     })
     .to(
       items,
       {
         opacity: 1,
         scale: 1,
-        duration: 0.8,
+        duration: 0.72,
         stagger: 0.12,
         ease: "back.out(1.4)",
       },
@@ -401,34 +415,31 @@ function runServiceNarrative(service) {
         item.querySelector(".item-text").textContent = service.solution[index];
         setNodePosition(item, service.solutionPositions[index]);
       });
-      tl.add(
-        Flip.from(flipState, {
-          duration: 1.2,
-          absolute: true,
-          scale: true,
-          ease: "power3.inOut",
-          stagger: 0.05,
-        }),
-      );
+      tl.add(Flip.from(flipState, {
+        duration: 1.05,
+        absolute: true,
+        scale: true,
+        ease: "power3.inOut",
+        stagger: 0.04,
+      }));
     }, "+=0.65")
     .add(() => {
       scenePhase.textContent = "Resultado";
     }, "+=0.7")
     .to(items, {
-      x: 0,
-      y: 0,
-      scale: 0.72,
-      opacity: 0.16,
-      duration: 0.8,
+      scale: 0.82,
+      opacity: 0.12,
+      y: 28,
+      duration: 0.72,
       stagger: 0.04,
     })
     .to(
       heroMessage,
       {
-        y: -110,
+        y: -126,
         opacity: 0.08,
         scale: 0.8,
-        duration: 0.7,
+        duration: 0.64,
       },
       "<",
     )
@@ -438,7 +449,7 @@ function runServiceNarrative(service) {
         y: 0,
         opacity: 1,
         scale: 1,
-        duration: 0.95,
+        duration: 0.82,
         ease: "power3.out",
       },
       "-=0.12",
@@ -456,18 +467,21 @@ function enterService(serviceId) {
   if (!service || !node) return;
 
   state.currentService = service;
+  state.activeNode = node;
   backButton.classList.remove("is-hidden");
 
   const flipState = Flip.getState(node);
+  node.classList.add("is-focus", "is-active");
+  node.querySelector(".service-node-label").textContent = service.title;
   setNodePosition(node, service.focus);
-  node.classList.add("is-active");
 
   const tl = gsap.timeline({
     defaults: { ease: "power3.inOut" },
     onStart: () => {
       document.querySelectorAll(".service-node").forEach((element) => {
         if (element !== node) {
-          gsap.to(element, { opacity: 0.08, scale: 0.8, duration: 0.4 });
+          element.classList.add("is-muted");
+          gsap.to(element, { opacity: 0.06, scale: 0.82, duration: 0.45 });
         }
       });
       document.querySelectorAll(".network-path").forEach((path) => {
@@ -478,38 +492,33 @@ function enterService(serviceId) {
     },
   });
 
-  tl.to(".map-layer", {
-    scale: 1.18,
-    x: (500 - service.map.x) * 0.14,
-    y: (500 - service.map.y) * 0.14,
-    duration: 0.9,
-  })
-    .add(
-      Flip.from(flipState, {
-        duration: 0.9,
-        absolute: true,
-        scale: true,
-        ease: "power3.inOut",
-      }),
-      0,
-    )
+  tl.add(Flip.from(flipState, {
+    duration: 0.95,
+    absolute: true,
+    scale: true,
+    ease: "power3.inOut",
+  }))
+    .to(".map-layer", {
+      scale: 1.02,
+      duration: 0.7,
+    }, 0)
     .to(node, {
-      scale: 2.4,
-      duration: 0.9,
-    }, 0.08)
+      scale: 1.34,
+      duration: 0.95,
+    }, 0.02)
     .to(
       `.network-path[data-service="${serviceId}"]`,
       {
         opacity: 1,
-        strokeWidth: 3.2,
+        strokeWidth: 3.1,
         duration: 0.8,
       },
-      0.1,
+      0.06,
     )
     .add(() => {
       node.style.pointerEvents = "none";
     })
-    .add(runServiceNarrative(service), "-=0.15");
+    .add(runServiceNarrative(service), "-=0.08");
 
   state.activeTimeline = tl;
 }
@@ -524,11 +533,12 @@ function backToMap() {
   const flipState = Flip.getState(node);
 
   state.currentService = null;
+  state.activeNode = null;
   clearStory();
-  sceneEyebrow.textContent = "Servicios FAROS";
-  sceneTitle.textContent = "Una red, cinco caminos, una sola operación con foco.";
-  scenePhase.textContent = "Mapa";
+  setMapScene();
 
+  node.classList.remove("is-focus");
+  node.querySelector(".service-node-label").textContent = service.title;
   setNodePosition(node, service.map);
   node.style.pointerEvents = "";
   backButton.classList.add("is-hidden");
@@ -540,21 +550,18 @@ function backToMap() {
     },
   });
 
-  tl.to(".map-layer", {
-    scale: 1,
-    x: 0,
-    y: 0,
-    duration: 0.9,
-  })
-    .add(
-      Flip.from(flipState, {
-        duration: 0.9,
-        absolute: true,
-        scale: true,
-        ease: "power3.inOut",
-      }),
-      0,
-    )
+  tl.add(Flip.from(flipState, {
+    duration: 0.95,
+    absolute: true,
+    scale: true,
+    ease: "power3.inOut",
+  }))
+    .to(".map-layer", {
+      scale: 1,
+      x: 0,
+      y: 0,
+      duration: 0.75,
+    }, 0)
     .to(node, { scale: 1, opacity: 0.78, duration: 0.9 }, 0)
     .to(
       ".service-node",
@@ -572,6 +579,7 @@ function backToMap() {
 
 buildMap();
 startIntroPulse();
+setMapScene();
 
 enterButton.addEventListener("click", enterExperience);
 backButton.addEventListener("click", backToMap);
