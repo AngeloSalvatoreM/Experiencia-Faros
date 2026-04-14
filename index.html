@@ -43,10 +43,8 @@
 
       <section class="view map-view" data-view="map" aria-labelledby="map-title">
         <header class="view-header">
-          <div>
-            <p class="eyebrow">Servicios</p>
-            <h1 id="map-title">Elegir un camino es activar una transformación.</h1>
-          </div>
+          <p class="eyebrow">Servicios FAROS</p>
+          <h1 id="map-title">Una red, cinco caminos, una operación con foco.</h1>
         </header>
 
         <div class="network-stage" id="networkStage">
@@ -62,10 +60,10 @@
             <g id="servicePaths"></g>
           </svg>
 
-          <div class="network-hub" id="networkHub">
-            <div class="hub-label">FAROS</div>
-            <p>Operación, control y transformación conectados.</p>
-          </div>
+          <button class="network-hub" id="networkHub" type="button" aria-label="Centro FAROS">
+            <span class="hub-label">FAROS</span>
+            <span class="hub-copy">Control, continuidad y transformación.</span>
+          </button>
 
           <div class="service-nodes" id="serviceNodes"></div>
         </div>
@@ -73,44 +71,25 @@
 
       <section class="view service-view" data-view="service" aria-live="polite">
         <button class="back-button" id="backToMap" type="button">Volver al mapa</button>
+        <button class="ghost-button" id="replayStory" type="button">Reproducir</button>
 
-        <div class="service-layout">
-          <aside class="service-copy">
-            <p class="eyebrow" id="serviceEyebrow">Servicio</p>
+        <div class="service-stage">
+          <div class="service-meta">
+            <p class="eyebrow" id="serviceEyebrow">Servicio FAROS</p>
             <h2 id="serviceTitle">FAROS</h2>
-            <p class="service-problem" id="serviceProblem"></p>
+            <p class="service-phase" id="storyPhaseLabel">Problema</p>
+          </div>
 
-            <div class="story-status">
-              <span class="status-line"></span>
-              <span class="status-label" id="storyPhaseLabel">Problema</span>
-            </div>
+          <div class="stage-background">
+            <span class="grid-orbit orbit-a"></span>
+            <span class="grid-orbit orbit-b"></span>
+            <span class="grid-orbit orbit-c"></span>
+          </div>
 
-            <div class="service-panel">
-              <p class="panel-label" id="servicePanelLabel">Impacto</p>
-              <p class="panel-body" id="servicePanelBody"></p>
-            </div>
-
-            <div class="service-result-card" id="resultCard">
-              <span class="result-label">Resultado</span>
-              <p id="serviceResult"></p>
-            </div>
-
-            <button class="ghost-button" id="replayStory" type="button">Reproducir historia</button>
-          </aside>
-
-          <div class="service-stage">
-            <div class="stage-background">
-              <span class="grid-orbit orbit-a"></span>
-              <span class="grid-orbit orbit-b"></span>
-              <span class="grid-orbit orbit-c"></span>
-            </div>
-
+          <div class="story-canvas">
             <div class="stage-layer problem-layer" id="problemLayer">
-              <div class="impact-pulse"></div>
-              <div class="impact-copy">
-                <span class="mini-label">Problema</span>
-                <p id="impactStatement"></p>
-              </div>
+              <div class="focus-pulse"></div>
+              <p class="hero-statement" id="impactStatement"></p>
             </div>
 
             <div class="stage-layer transformation-layer" id="transformationLayer">
@@ -119,11 +98,8 @@
             </div>
 
             <div class="stage-layer result-layer" id="resultLayer">
-              <div class="result-orbit"></div>
-              <div class="result-core">
-                <span class="mini-label">Impacto</span>
-                <p id="resultStatement"></p>
-              </div>
+              <div class="result-halo"></div>
+              <p class="hero-statement result-statement" id="resultStatement"></p>
             </div>
           </div>
         </div>
