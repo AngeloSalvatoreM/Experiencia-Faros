@@ -98,6 +98,9 @@ button {
   place-items: center;
   gap: 1.2rem;
   z-index: 12;
+  background:
+    radial-gradient(circle at center, rgba(34, 62, 93, 0.14), rgba(23, 45, 69, 0.92) 54%, rgba(23, 45, 69, 0.98) 100%),
+    linear-gradient(145deg, rgba(23, 45, 69, 0.96) 0%, rgba(34, 62, 93, 0.94) 55%, rgba(23, 45, 69, 0.98) 100%);
 }
 
 .intro-eyebrow {
@@ -119,6 +122,8 @@ button {
   justify-items: center;
   cursor: pointer;
   transform-origin: center;
+  position: relative;
+  z-index: 1;
 }
 
 .logo-mark {
