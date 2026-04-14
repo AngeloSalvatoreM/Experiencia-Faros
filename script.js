@@ -337,7 +337,15 @@ function enterExperience() {
       0.5,
     )
     .fromTo(sceneCopy, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65 }, 0.65)
-    .to(introOverlay, { y: -40, duration: 0.8 }, 0.4);
+    .to(
+      introOverlay,
+      {
+        yPercent: -100,
+        duration: 1.05,
+        ease: "power3.inOut",
+      },
+      0.3,
+    );
 
   state.activeTimeline = tl;
 }
